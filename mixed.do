@@ -1,3 +1,5 @@
+* This code estimates multilevel models using the mixed command and saves the estimation times to disk
+
 cd "F:\Dropbox\Forskning\Software tests\Multilevel"
 *cd "C:\Users\adria\Dropbox\Forskning\Software tests\Multilevel"
 
@@ -6,9 +8,10 @@ set more off
 * Set number of tests
 local n = 10
 
-tempfile small medium large
+* tempfile small medium large
 
-foreach f in small medium large {
+* foreach f in small medium large {
+foreach f in large {
 	use data_`f', clear
 
 	* Create matrix for storing times
@@ -58,7 +61,7 @@ foreach f in small medium large {
 	timer clear
 	forvalues i = 1/`n' {
 		timer on `i'
-		mixed y i.by i.gender || id2: || id3:, reml matlog
+		mixed y i.by i.gender || id2: || id3:, reml matlog difficult
 		timer off `i'
 	}
 
@@ -76,7 +79,7 @@ foreach f in small medium large {
 	timer clear
 	forvalues i = 1/`n' {
 		timer on `i'
-		mixed y i.by i.gender || id2: || id3:, mle matlog
+		mixed y i.by i.gender || id2: || id3:, mle matlog difficult
 		timer off `i'
 	}
 
@@ -101,7 +104,7 @@ foreach f in small medium large {
 	save Stata_test_`f'.dta, replace
 }
 
-append using `medium'
-append using `small'
+* append using `medium'
+* append using `small'
 
-save "Stata_test_data.dta, replace"
+* save "Stata_test_data.dta, replace"

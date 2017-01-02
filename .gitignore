@@ -1,0 +1,8 @@
+# R history
+.Rhistory
+
+# Data files
+*.rda
+*.dta
+*.feather
+.Rproj.user

@@ -1,3 +1,5 @@
+# This code estimates multilevel models using the MixedModels package and saves the estimation times to disk
+
 using Feather, DataFrames, BenchmarkTools, MixedModels
 
 try

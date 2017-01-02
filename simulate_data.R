@@ -1,3 +1,4 @@
+# This code simulates three multilevel datasets of different sizes
 
 setwd("F:/Dropbox/Forskning/Software tests/Multilevel")
 
@@ -91,9 +92,6 @@ df_small <- simulate_multilevel(sd3, sd2, sd1, 10000)
 df_medium <- simulate_multilevel(sd3, sd2, sd1, 100000)
 df_large <- simulate_multilevel(sd3, sd2, sd1, 1000000)
 
-
-# convert to factors
-#df <- df %>% mutate(by = as.factor(by), gender = as.factor(gender), id3 = as.factor(id3), id2 = as.factor(id2), id1 = as.factor(id1))
 
 write_feather(df_small, "data_small.feather")
 write_dta(df_small, "data_small.dta")
