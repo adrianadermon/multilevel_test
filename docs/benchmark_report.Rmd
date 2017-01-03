@@ -21,12 +21,16 @@ setwd("C:/Users/adria/Dropbox/Forskning/Software tests/Multilevel")
 df <- read_feather("results.feather")
 ```
 
+\[
+y_i = \alpha + \beta x_i + \mu_k + \nu_{jk} + \eta_{ijk}
+\]
+
 ## R using lme4
 
 ```{r lme4_setup, include=FALSE}
 library(lme4)
 
-small <- read_feather("data_small.feather")
+small <- read_feather("../data_small.feather")
 
 
 # Convert to factors
@@ -37,12 +41,14 @@ small <- small %>% mutate(by = as.factor(by),
                     id1 = as.factor(id1))
 ```
 
+In R (version 3.3.2), I estimate the model using the `lmer` command from the lme4 package (version 1.1-12) with the following code:
 ```{r lme4_reml2}
 lmer(y ~ by + gender + (1 | id2), data = small, REML = FALSE)
 ```
 
 ## julia using MixedModels
 
+In julia (version 0.5.0), I use the `lmm` command from the MixedModels package (version 0.7.3) using this code:
 ```julia
 fit!(lmm(y ~ by + gender + (1 | id2), small))
 ```
@@ -88,6 +94,7 @@ fit!(lmm(y ~ by + gender + (1 | id2), small))
 
 ## Stata using mixed
 
+In Stata (version 14.2) I use the mixed command. Here is the code:
 ```stata
 mixed y i.by i.gender || id2:, mle
 ```
@@ -154,7 +161,7 @@ mixed y i.by i.gender || id2:, mle
 ```
 
 
-
+The table below shows median estimation times (over 10 replications) for the two- and three-level models using small, medium, and large data sets and estimated using maximum likelihood and restricted maximum likelihood (not available in julia). 
 ```{r htmlTable2, echo=FALSE}
 library(htmlTable)
 df %>% 
@@ -185,14 +192,15 @@ df %>%
     n.rgroup = c(3, 2),
     cgroup = c("2-level model", "3-level model"),
     n.cgroup = c(3, 3), 
-    caption = "Estimation times in seconds",
-    tfoot = "Median times from 10 replications for each combination.",
+    caption = "Estimation times for multilevel models",
+    tfoot = "Median times in seconds from 10 replications for each combination.",
     align = "r",
     align.cgroup = "c",
     css.cell = "padding-left: 1em; padding-right: .5em;"
   )
 ```
 
+To visualize the speed differences, below I plot median estimation times relative to julia (julia median times have all been normalized to unity, and the other times have been divided with the corresponding julia times). The plot only shows the two-level model estimated with maximum likelihood, since this is the only specification that is possible with all three packages.
 ```{r relative_plot, echo=FALSE}
 df %>% 
   group_by(package, type, levels, data) %>% 
@@ -212,6 +220,9 @@ df %>%
                            strip.background = element_blank(),
                            axis.title.x = element_blank(),
                            axis.title.y = element_blank(),
-                           legend.position = "bottom"
+                           legend.position = "bottom",
+                            legend.title = element_blank()
   )
 ```
+
+It is clear from this plot that R is around 20 times slower than julia, while Stata is around 200 times slower, and thus around 10 times slower than R. 
