@@ -16,9 +16,7 @@ library(stringr)
 library(forcats)
 library(lubridate)
 
-setwd("C:/Users/adria/Dropbox/Forskning/Software tests/Multilevel")
-
-df <- read_feather("results.feather")
+df <- read_feather("../results.feather")
 ```
 
 \[
